@@ -1,0 +1,37 @@
+//给定n个闭区间，问最少需要确定多少个点，才能使每个闭区间中都至少存在一个点。
+//区间选点问题（贪心算法）
+//难点在于比较函数的确定
+
+#include <cstdio>
+#include <algorithm>
+using namespace std;
+const int MAXN = 10000;
+struct Interval {    // 区间结构体定义
+    int l, r;
+} interval[MAXN];    // 区间数组
+
+bool cmp(Interval a, Interval b) {    // 区间的比较函数
+    if (a.l != b.l) {                 // 如果左端点不同，那么按左端点从大到小
+        return a.l > b.l;
+    } else {                          // 否则，按右端点从小到大
+        return a.r < b.r;
+    }
+}
+
+int main() {
+    int n;
+    scanf("%d", &n);
+    for (int i = 0; i < n; i++) {         // 输入n个区间的左右端点
+        scanf("%d%d", &interval[i].l, &interval[i].r);
+    }
+    sort(interval, interval + n, cmp);    // 将区间数组进行排序
+    int num = 1, lastL = interval[0].l;   // 排序后的第一个区间的左端点总是被选中
+    for (int i = 1; i < n; i++) {         // 遍历剩余的区间
+        if (interval[i].r < lastL) {      // 如果和上一个选中的区间不相交（注意此处是闭区间，所以不能取到等号）
+            lastL = interval[i].l;        // 那么选中当前区间的左端点
+            num++;                        // 并令选中的点的数量加1
+        }
+    }
+    printf("%d", num);                    // 输出选中的点数量
+    return 0;
+}
